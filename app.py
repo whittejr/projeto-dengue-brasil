@@ -1,9 +1,7 @@
-import json
 from pathlib import Path
 
 import pandas as pd
 import plotly.express as px
-import plotly.graph_objects as go
 import streamlit as st
 
 
@@ -118,77 +116,6 @@ col_incidencia.plotly_chart(grafico_incidencia)
 st.caption(
     "A incidência exibida é a média dos valores de cada registro da base, "
     "não uma taxa calculada para a população total da região."
-)
-
-st.divider()
-st.subheader("Mapa por UF")
-indicadores_mapa = {
-    "Casos": "casos_dengue",
-    "Internações": "internacoes",
-    "Óbitos": "obitos",
-}
-indicador_mapa = st.radio(
-    "Mostrar no mapa", list(indicadores_mapa), horizontal=True
-)
-mapa_uf = dados.groupby("uf", as_index=False)[
-    ["casos_dengue", "internacoes", "obitos"]
-].sum()
-codigos_uf = {
-    "AM": "13", "BA": "29", "CE": "23", "DF": "53", "ES": "32",
-    "GO": "52", "MA": "21", "MG": "31", "MS": "50", "MT": "51",
-    "PA": "15", "PB": "25", "PE": "26", "PR": "41", "RJ": "33",
-    "RO": "11", "RS": "43", "SC": "42", "SP": "35", "TO": "17",
-}
-mapa_uf["codigo_ibge"] = mapa_uf["uf"].map(codigos_uf)
-malha = json.loads(
-    (Path(__file__).parent / "dados" / "malha_estados_ibge.geojson")
-    .read_text(encoding="utf-8")
-)
-
-grafico_mapa = go.Figure()
-grafico_mapa.add_choropleth(
-    geojson=malha,
-    featureidkey="properties.codarea",
-    locations=[estado["properties"]["codarea"] for estado in malha["features"]],
-    z=[0] * len(malha["features"]),
-    colorscale=[[0, "#e7eef0"], [1, "#e7eef0"]],
-    showscale=False,
-    marker_line_color="white",
-    marker_line_width=0.8,
-    hoverinfo="skip",
-)
-detalhes_mapa = [
-    (
-        f"<b>{linha.uf}</b><br>Casos: {linha.casos_dengue:,.0f}<br>"
-        f"Internações: {linha.internacoes:,.0f}<br>Óbitos: {linha.obitos:,.0f}"
-    ).replace(",", ".")
-    for linha in mapa_uf.itertuples()
-]
-grafico_mapa.add_choropleth(
-    geojson=malha,
-    featureidkey="properties.codarea",
-    locations=mapa_uf["codigo_ibge"],
-    z=mapa_uf[indicadores_mapa[indicador_mapa]],
-    zmin=0,
-    zmax=max(int(mapa_uf[indicadores_mapa[indicador_mapa]].max()), 1),
-    colorscale=[[0, "#d7f0ed"], [0.5, "#58b3a8"], [1, "#0c7168"]],
-    colorbar_title=indicador_mapa,
-    marker_line_color="white",
-    marker_line_width=0.8,
-    text=detalhes_mapa,
-    hovertemplate="%{text}<extra></extra>",
-)
-grafico_mapa.update_geos(fitbounds="locations", visible=False, projection_type="mercator")
-grafico_mapa.update_layout(
-    height=560,
-    margin=dict(l=0, r=0, t=0, b=0),
-    separators=",.",
-    paper_bgcolor="rgba(0,0,0,0)",
-)
-st.plotly_chart(grafico_mapa)
-st.caption(
-    "Passe o mouse sobre uma UF para ver os totais. Em cinza estão as UFs fora "
-    "do filtro ou ausentes da base simulada. Contornos: IBGE."
 )
 
 with st.expander("Análise temporal: tendência mensal"):

@@ -8,8 +8,6 @@ Os dados são **simulados**. A base tem 4.440 registros de 37 municípios em 20 
 
 No [notebook](notebooks/analise_dengue.ipynb), fiz a leitura e preparação da base, calculei indicadores e criei gráficos. Também analisei a relação dos casos com chuva e temperatura. No [dashboard](app.py), é possível filtrar por ano, região e UF, comparar casos e incidência, acompanhar a tendência mensal e baixar o recorte em CSV.
 
-O mapa do dashboard mostra casos, internações ou óbitos por UF e acompanha os filtros. Os limites dos estados vêm da [malha simplificada do IBGE](https://servicodados.ibge.gov.br/api/docs/malhas?versao=3); os valores exibidos continuam sendo da base simulada.
-
 Na base completa, encontrei 3.560.562 casos, 178.670 internações e 5.314 óbitos. O ano com mais casos foi 2018. O Sudeste teve mais casos em números absolutos, enquanto o Nordeste apresentou a maior média do indicador de incidência da base. Isso mostra por que vale olhar tanto os totais quanto as taxas.
 
 ## Como executar o dashboard
@@ -28,7 +26,6 @@ O arquivo CSV precisa permanecer na pasta `dados/`, pois é ele que o notebook e
 - `notebooks/analise_dengue.ipynb`: análise completa.
 - `app.py`: dashboard em Streamlit.
 - `dados/simulacao_dengue_brasil.csv`: base simulada utilizada.
-- `dados/malha_estados_ibge.geojson`: contornos estaduais usados no mapa.
 - `index.html`: página de apresentação para o GitHub Pages.
 - `requirements.txt`: bibliotecas necessárias para executar o app.
 
