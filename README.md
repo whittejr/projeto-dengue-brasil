@@ -32,3 +32,7 @@ O arquivo CSV precisa permanecer na pasta `dados/`, pois é ele que o notebook e
 Usei Pandas, Matplotlib e Seaborn na análise; o dashboard usa Streamlit e Plotly.
 
 ## Links da entrega
+
+- [Repositório no GitHub](https://github.com/whittejr/projeto-dengue-brasil)
+- [Página do projeto](https://whittejr.github.io/projeto-dengue-brasil/)
+- [Dashboard interativo](https://projeto-dengue-brasill.streamlit.app/)
