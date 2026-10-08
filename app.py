@@ -13,6 +13,11 @@ df = pd.read_csv(caminho)
 df["data"] = pd.to_datetime(df["data"])
 
 st.title("Dengue no Brasil")
+st.markdown(
+    "**Projeto:** Avaliação G1 — Tema 1  \n"
+    "**Disciplina:** Linguagem de Programação — Análise e Visualização de Dados com Python  \n"
+    "**Aluno:** Alessandro Davi · **Professor:** Alexandre Neves Louzada"
+)
 st.caption("Análise de dados simulados | 2015 a 2024")
 st.write("Explore os casos ao longo do tempo e compare regiões e estados.")
 st.caption("A base é simulada. Os resultados não representam estatísticas oficiais de saúde.")

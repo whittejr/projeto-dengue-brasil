@@ -1,5 +1,10 @@
 # Análise da dengue no Brasil
 
+- **Projeto:** Avaliação G1 — Tema 1
+- **Disciplina:** Linguagem de Programação — Análise e Visualização de Dados com Python
+- **Aluno:** Alessandro Davi
+- **Professor:** Alexandre Neves Louzada
+
 Este é meu projeto da avaliação G1 de Análise e Visualização de Dados com Python. Usei uma base simulada de dengue no Brasil para comparar os casos entre 2015 e 2024, observar diferenças entre regiões e estados e montar um dashboard com filtros.
 
 Os dados são **simulados**. A base tem 4.440 registros de 37 municípios em 20 UFs; portanto, os números não são estatísticas oficiais de saúde nem cobrem todos os municípios do país.
