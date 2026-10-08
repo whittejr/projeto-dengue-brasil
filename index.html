@@ -17,14 +17,14 @@
     nav { display: flex; gap: 18px; }
     nav a { color: var(--texto); text-decoration: none; }
     nav a:hover { text-decoration: underline; }
-    .hero { background: #e8f3f1; padding: 72px 0; }
+    .hero { background: linear-gradient(135deg, #e8f3f1, #edf3f9); padding: 72px 0; }
     .tag { margin: 0 0 12px; color: var(--verde); font-size: .82rem; font-weight: bold; letter-spacing: .08em; text-transform: uppercase; }
     h1 { max-width: 700px; margin: 0; color: var(--azul); font-size: clamp(2.3rem, 6vw, 4rem); line-height: 1.1; }
     .hero p:last-child { max-width: 660px; margin: 22px 0 0; font-size: 1.1rem; }
     main section:not(.hero) { padding: 38px 0; }
     h2 { margin: 0 0 20px; color: var(--azul); font-size: 1.8rem; }
     .cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
-    .card { padding: 22px; background: white; border: 1px solid #dce6e8; border-radius: 10px; }
+    .card { padding: 22px; background: white; border: 1px solid #dce6e8; border-radius: 10px; box-shadow: 0 6px 20px rgba(23, 67, 93, .05); }
     .card strong { display: block; color: var(--azul); font-size: 1.6rem; }
     .card span { color: #5c6c75; }
     .note { color: #5c6c75; font-size: .92rem; }
@@ -65,7 +65,7 @@
     <section id="projeto">
       <div class="container">
         <h2>Sobre o projeto</h2>
-        <p>Analisei uma base simulada com registros de dengue no Brasil entre 2015 e 2024. O trabalho reúne a preparação dos dados, gráficos, indicadores e um dashboard para explorar os resultados por ano, região e UF.</p>
+        <p>Analisei uma base simulada com 4.440 registros de 37 municípios em 20 UFs, entre 2015 e 2024. O trabalho reúne preparação dos dados, gráficos, indicadores e um dashboard para explorar os resultados por ano, região e UF.</p>
         <h2>Perguntas da análise</h2>
         <ul class="results">
           <li>Como os casos variaram ao longo dos anos e dos meses?</li>
@@ -94,8 +94,10 @@
         <h2>Principais resultados</h2>
         <ul class="results">
           <li>2018 foi o ano com mais casos: 374.478 registros.</li>
-          <li>O Sudeste teve o maior total entre as regiões, com 1.289.622 casos.</li>
-          <li>O Rio de Janeiro foi a UF com mais casos, somando 391.014 registros.</li>
+          <li>O Sudeste teve o maior total entre as regiões (1.289.622), e o RJ liderou entre as UFs (391.014).</li>
+          <li>Na média do indicador de incidência dos registros, o Nordeste ficou à frente, com 32,11 por 100 mil habitantes.</li>
+          <li>Abril teve o maior total acumulado entre os meses: 348.361 casos.</li>
+          <li>Chuva e temperatura tiveram correlação positiva, mas fraca, com os casos.</li>
         </ul>
       </div>
     </section>

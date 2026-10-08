@@ -14,7 +14,8 @@ df["data"] = pd.to_datetime(df["data"])
 
 st.title("Dengue no Brasil")
 st.caption("Análise de dados simulados | 2015 a 2024")
-st.write("Explore a evolução dos casos e compare os resultados entre regiões e estados.")
+st.write("Explore os casos ao longo do tempo e compare regiões e estados.")
+st.caption("A base é simulada. Os resultados não representam estatísticas oficiais de saúde.")
 
 # Filtros
 st.sidebar.header("Filtros")
@@ -53,7 +54,12 @@ col1, col2, col3, col4 = st.columns(4)
 col1.metric("Casos", f"{casos:,}".replace(",", "."))
 col2.metric("Internações", f"{internacoes:,}".replace(",", "."))
 col3.metric("Óbitos", f"{obitos:,}".replace(",", "."))
-col4.metric("Taxa de mortalidade", f"{taxa_mortalidade:.2f}%".replace(".", ","))
+col4.metric("Óbitos / casos", f"{taxa_mortalidade:.2f}%".replace(".", ","))
+total_registros_texto = f"{len(dados):,}".replace(",", ".")
+st.caption(
+    f"{total_registros_texto} registros · {dados['municipio'].nunique()} municípios · "
+    f"{dados['uf'].nunique()} UFs no recorte selecionado"
+)
 
 st.divider()
 st.subheader("Visão dos casos")
@@ -90,7 +96,27 @@ grafico_uf = px.bar(
 )
 grafico_uf.update_traces(marker_color="#0f766e")
 grafico_uf.update_layout(template="plotly_white", height=420)
-st.plotly_chart(grafico_uf)
+
+incidencia_regiao = (
+    dados.groupby("regiao", as_index=False)["incidencia_100k"]
+    .mean()
+    .sort_values("incidencia_100k")
+)
+grafico_incidencia = px.bar(
+    incidencia_regiao, x="incidencia_100k", y="regiao", orientation="h",
+    title="Incidência média por região",
+    labels={"regiao": "Região", "incidencia_100k": "Por 100 mil habitantes"},
+)
+grafico_incidencia.update_traces(marker_color="#2563eb")
+grafico_incidencia.update_layout(template="plotly_white", height=420)
+
+col_uf, col_incidencia = st.columns([1.3, 1])
+col_uf.plotly_chart(grafico_uf)
+col_incidencia.plotly_chart(grafico_incidencia)
+st.caption(
+    "A incidência exibida é a média dos valores de cada registro da base, "
+    "não uma taxa calculada para a população total da região."
+)
 
 with st.expander("Análise temporal: tendência mensal"):
     anos_disponiveis = sorted(dados["ano"].unique())
@@ -136,6 +162,35 @@ with st.expander("Análise temporal: tendência mensal"):
     st.caption("A média móvel começa em março, após três meses de dados. A variação compara cada mês com o anterior.")
     st.dataframe(tabela_mensal, hide_index=True, width="stretch")
 
+with st.expander("Chuva, temperatura e casos"):
+    corr_chuva = dados["chuva_mm"].corr(dados["casos_dengue"])
+    corr_temperatura = dados["temperatura_media"].corr(dados["casos_dengue"])
+    texto_chuva = f"{corr_chuva:.2f}".replace(".", ",")
+    texto_temperatura = f"{corr_temperatura:.2f}".replace(".", ",")
+    st.write(
+        f"Correlação com chuva: **{texto_chuva}** · "
+        f"Correlação com temperatura: **{texto_temperatura}**. "
+        "Os valores mostram associação linear no recorte selecionado; "
+        "não indicam que uma variável, sozinha, cause o aumento dos casos."
+    )
+    grafico_chuva = px.scatter(
+        dados, x="chuva_mm", y="casos_dengue", opacity=0.35,
+        title="Chuva e casos", color_discrete_sequence=["#0f766e"],
+        labels={"chuva_mm": "Chuva (mm)", "casos_dengue": "Casos"},
+        hover_data=["municipio", "uf", "ano", "mes"],
+    )
+    grafico_temperatura = px.scatter(
+        dados, x="temperatura_media", y="casos_dengue", opacity=0.35,
+        title="Temperatura e casos", color_discrete_sequence=["#2563eb"],
+        labels={"temperatura_media": "Temperatura média (°C)", "casos_dengue": "Casos"},
+        hover_data=["municipio", "uf", "ano", "mes"],
+    )
+    grafico_chuva.update_layout(template="plotly_white")
+    grafico_temperatura.update_layout(template="plotly_white")
+    col_chuva, col_temperatura = st.columns(2)
+    col_chuva.plotly_chart(grafico_chuva)
+    col_temperatura.plotly_chart(grafico_temperatura)
+
 with st.expander("Ver dados filtrados"):
     st.dataframe(
         dados[["data", "regiao", "uf", "municipio", "casos_dengue",
@@ -144,14 +199,25 @@ with st.expander("Ver dados filtrados"):
         hide_index=True,
         width="stretch",
     )
+    st.download_button(
+        "Baixar dados filtrados (CSV)",
+        dados.to_csv(index=False).encode("utf-8-sig"),
+        file_name="dengue_filtrada.csv",
+        mime="text/csv",
+    )
 
 st.subheader("Interpretação")
 ano_maior = casos_ano.loc[casos_ano["casos_dengue"].idxmax(), "ano"]
 uf_maior = casos_uf.loc[casos_uf["casos_dengue"].idxmax(), "uf"]
+regiao_maior = casos_regiao.loc[casos_regiao["casos_dengue"].idxmax(), "regiao"]
+casos_regiao_maior = casos_regiao["casos_dengue"].max()
+participacao_regiao = casos_regiao_maior / casos * 100 if casos else 0
 taxa_internacao_texto = f"{taxa_internacao:.2f}".replace(".", ",")
+participacao_texto = f"{participacao_regiao:.1f}".replace(".", ",")
 st.write(
     f"No recorte selecionado, **{ano_maior}** teve mais casos e **{uf_maior}** "
-    f"foi a UF com mais registros. A taxa de internação foi de "
+    f"foi a UF com mais registros. A região **{regiao_maior}** reuniu "
+    f"**{participacao_texto}%** dos casos. A taxa de internação foi de "
     f"**{taxa_internacao_texto}%**."
 )
 
